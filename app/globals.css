@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Premium dark theme with subtle neon accents */
+  --background: #0a0a0f;
+  --foreground: #ffffff;
+  --card: #12121a;
+  --card-foreground: #ffffff;
+  --popover: #12121a;
+  --popover-foreground: #ffffff;
+  --primary: #06b6d4;
+  --primary-foreground: #000000;
+  --secondary: #14b8a6;
+  --secondary-foreground: #000000;
+  --muted: #1e1e2e;
+  --muted-foreground: #94a3b8;
+  --accent: #0891b2;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #1e293b;
+  --input: #1e1e2e;
+  --ring: #06b6d4;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: #050510;
+  --foreground: #00ff00;
+  --card: #0a0a15;
+  --card-foreground: #00ff00;
+  --popover: #0a0a15;
+  --popover-foreground: #00ff00;
+  --primary: #ff00ff;
+  --primary-foreground: #000000;
+  --secondary: #00ffff;
+  --secondary-foreground: #000000;
+  --muted: #1a1a2e;
+  --muted-foreground: #4a4a6a;
+  --accent: #00ffff;
+  --accent-foreground: #000000;
+  --destructive: #ff0055;
+  --destructive-foreground: #ffffff;
+  --border: #4a4a6a;
+  --input: #1a1a2e;
+  --ring: #ff00ff;
+  --chart-1: #ff00ff;
+  --chart-2: #00ffff;
+  --chart-3: #00ff00;
+  --chart-4: #ffff00;
+  --chart-5: #ff0055;
+  --sidebar: #0a0a15;
+  --sidebar-foreground: #00ff00;
+  --sidebar-primary: #ff00ff;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #00ffff;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: #4a4a6a;
+  --sidebar-ring: #ff00ff;
+}
+
+@theme inline {
+  --font-sans: "Inter", "system-ui", "sans-serif";
+  --font-mono: "Geist Mono", "monospace";
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --radius-lg: var(--radius);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-tetsuo-bg: var(--tetsuo-bg);
+  --color-tetsuo-panel: var(--tetsuo-panel);
+  --color-tetsuo-pink: var(--tetsuo-pink);
+  --color-tetsuo-green: var(--tetsuo-green);
+  --color-tetsuo-cyan: var(--tetsuo-cyan);
+  --color-tetsuo-dim: var(--tetsuo-dim);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    background: linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #0f1419 100%);
+    color: var(--foreground);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .glow-cyan {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+  }
+  .glow-teal {
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
+  }
+  .gradient-card {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+    border: 1px solid rgba(20, 184, 166, 0.2);
+  }
+  .neon-pink {
+    text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+  }
+  .neon-green {
+    text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00;
+  }
+  .neon-cyan {
+    text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 20px #00ffff;
+  }
+  .shadow-neon-pink {
+    box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+  }
+  .shadow-neon-green {
+    box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+  }
+  .shadow-neon-cyan {
+    box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+  }
+}
