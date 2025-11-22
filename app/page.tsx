@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { CoinbaseWS } from "@/lib/coinbase-ws"
 import { Plus, TrendingUp, AlertTriangle, Activity, BarChart3, Wallet } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import MiniChart from "@/components/mini-chart"
 import ProbabilityBar from "@/components/probability-bar"
 import BroadcastSignal from "@/components/broadcast-signal"
+import { useMiniAppAuth } from "@/lib/use-miniapp-auth"
 
 interface CoinData {
   id: string
@@ -27,6 +28,7 @@ interface PolyEvent {
 }
 
 export default function TetsuoTerminal() {
+  const { user, isInMiniApp, isInitializing, isConnecting, deepLinkUrl, connectWallet } = useMiniAppAuth()
   const [view, setView] = useState<"watchlist" | "feed">("watchlist")
   const [watchlist, setWatchlist] = useState<CoinData[]>([
     { id: "BTC-USD", symbol: "BTC", price: 0 },
@@ -38,23 +40,6 @@ export default function TetsuoTerminal() {
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
   const wsRef = useRef<CoinbaseWS | null>(null)
-
-  // Initialize Farcaster SDK
-  useEffect(() => {
-    const initFarcaster = async () => {
-      try {
-        const { default: sdk } = await import("@farcaster/miniapp-sdk")
-        setTimeout(() => {
-          if (typeof sdk?.actions?.ready === "function") {
-            sdk.actions.ready()
-          }
-        }, 500)
-      } catch (error) {
-        console.log("Running outside Farcaster environment")
-      }
-    }
-    initFarcaster()
-  }, [])
 
   // Connect to Coinbase WebSocket
   useEffect(() => {
@@ -126,6 +111,12 @@ export default function TetsuoTerminal() {
 
   const activeCoin = watchlist.find((c) => c.id === activeSymbol)
 
+  const connectionLabel = useMemo(() => {
+    if (user?.username) return `@${user.username}`
+    if (user?.address) return `${user.address.slice(0, 6)}...${user.address.slice(-4)}`
+    return "Connect"
+  }, [user])
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
       {/* Header */}
@@ -135,15 +126,51 @@ export default function TetsuoTerminal() {
             <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
               Tetsuo Terminal
             </h1>
-            <Button variant="outline" size="sm" className="gap-2 bg-slate-800 border-slate-700 hover:bg-slate-700">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isConnecting || isInitializing}
+              onClick={connectWallet}
+              className="gap-2 bg-slate-800 border-slate-700 hover:bg-slate-700"
+            >
               <Wallet className="w-4 h-4" />
-              <span className="hidden sm:inline">Connect</span>
+              <span className="hidden sm:inline">{isConnecting ? "Connecting..." : connectionLabel}</span>
             </Button>
           </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        {isInMiniApp === false && (
+          <div className="mb-6 grid gap-4 rounded-xl border border-slate-800 bg-slate-900/70 p-4 sm:grid-cols-[1.2fr,1fr]">
+            <div className="space-y-2">
+              <p className="text-cyan-300 font-semibold">Open in Base App</p>
+              <p className="text-sm text-slate-300">
+                Connect your Farcaster account by opening this miniapp inside Base App. Use the deep link below or scan the QR
+                code to launch it.
+              </p>
+              {deepLinkUrl && (
+                <Button
+                  asChild
+                  className="mt-2 w-fit bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600"
+                >
+                  <a href={`https://warpcast.com/~/link?url=${encodeURIComponent(deepLinkUrl)}`} target="_blank" rel="noreferrer">
+                    Open in Farcaster
+                  </a>
+                </Button>
+              )}
+            </div>
+            {deepLinkUrl && (
+              <div className="flex items-center justify-center">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(deepLinkUrl)}`}
+                  alt="Scan to open in Base App"
+                  className="rounded-lg border border-slate-800 bg-white p-2"
+                />
+              </div>
+            )}
+          </div>
+        )}
         {/* View Toggle */}
         <div className="flex gap-2 mb-6">
           <Button
